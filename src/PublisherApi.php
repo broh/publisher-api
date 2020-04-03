@@ -150,7 +150,7 @@ class PublisherApi
             'clickid' => $this->getClickid(),
             'address' => $this->getAddress(),
             'price' => $this->getPrice(),
-            'custom' => is_array($_REQUEST['custom']) ? $_REQUEST['custom'] : array(),
+            'custom' => isset($_REQUEST['custom']) && is_array($_REQUEST['custom']) ? $_REQUEST['custom'] : array(),
         );
     }
 
