@@ -1,0 +1,19 @@
+{
+  "name": "aff1/publisher-api",
+  "type": "library",
+  "description": "",
+  "keywords": [
+    "aff1"
+  ],
+  "license": "MIT",
+  "require": {
+    "php": ">=5.3",
+    "ext-curl": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Aff1\\": "src/"
+    }
+  },
+  "minimum-stability": "dev"
+}
