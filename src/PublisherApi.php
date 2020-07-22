@@ -11,69 +11,100 @@ namespace Aff1;
 
 class PublisherApi
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     private $api_key = '{YOUR_API_KEY}';
-    /**
-     * @var string
-     */
+
+    /** @var string */
     private $target_hash = '{TARGET_HASH}';
-    /**
-     * @var string
-     */
+
+    /** @var string */
     private $country_code = '{COUNTRY_CODE}';
-    /**
-     * @var string|null
-     */
-    private $data1;
-    /**
-     * @var string|null
-     */
-    private $data2;
-    /**
-     * @var string|null
-     */
-    private $data3;
-    /**
-     * @var string|null
-     */
-    private $data4;
-    /**
-     * @var string|null
-     */
-    private $clickid;
-    /**
-     * @var string
-     */
+
+    /** @var string */
     private $name;
-    /**
-     * @var string
-     */
+
+    /** @var string */
+    private $first_name;
+
+    /** @var string */
+    private $last_name;
+
+    /** @var string */
     private $phone;
-    /**
-     * @var string
-     */
+
+    /** @var string */
     private $phone2;
-    /**
-     * @var string
-     */
+
+    /** @var string */
+    private $data1;
+
+    /** @var string */
+    private $data2 = '';
+
+    /** @var string */
+    private $data3 = '';
+
+    /** @var string */
+    private $data4 = '';
+
+    /** @var string */
+    private $clickid = '';
+
+    /** @var string */
+    private $browser_locale = '';
+
+    /** @var string */
     private $address;
-    /**
-     * @var float|null
-     */
-    private $price;
-    /**
-     * @var string
-     */
+
+    /** @var string */
+    private $state;
+
+    /** @var string */
+    private $city;
+
+    /** @var string */
+    private $zipcode;
+
+    /** @var string */
+    private $email;
+
+    /** @var string */
+    private $comment = '';
+
+    /** @var string */
+    private $size = '';
+
+    /** @var string */
+    private $quantity = '';
+
+    /** @var string */
+    private $password = '';
+
+    /** @var string */
+    private $language = '';
+
+    /** @var string */
+    private $tz_name = '';
+
+    /** @var string */
+    private $call_time_frame = '';
+
+    /** @var string */
+    private $messenger_code = '';
+
+    /** @var string */
+    private $sale_code = '';
+
+    /** @var float */
+    private $price = 0.0;
+
+    /** @var string */
     private $log_file_path = '';
-    /**
-     * @var bool
-     */
+
+    /** @var bool */
     private $enable_write_log = false;
-    /**
-     * @var array
-     */
+
+    /** @var array */
     private $curl_info = array();
 
     /**
@@ -87,9 +118,9 @@ class PublisherApi
      */
     public function makeOrder($name, $phone, $phone2 = '')
     {
-        $this->setName($name);
-        $this->setPhone($phone);
-        $this->setPhone2($phone2);
+        $this->setProperty('name', $name);
+        $this->setProperty('phone', $phone);
+        $this->setProperty('phone2', $phone2);
 
         $ch = $this->getCh();
 
@@ -108,115 +139,68 @@ class PublisherApi
         return $response;
     }
 
-    public function makeOrderByRawRequest()
-    {
-        if (isset($_REQUEST['address'])) {
-            $this->setAddress($_REQUEST['address']);
-        }
-
-        $phone2 = isset($_REQUEST['phone2']) ? $_REQUEST['phone2'] : '';
-
-        return $this->makeOrder($_REQUEST['client'], $_REQUEST['phone'], $phone2);
-    }
-
     private function getCh()
     {
         if (!extension_loaded('curl')) {
             throw new \Exception('cURL extension not found');
         }
 
-        return curl_init('https://api.aff1.com/v2/lead.create');
+        return curl_init('https://api.aff1.com/v3/lead.create');
     }
 
-    private function getRequestParams()
+    public function getRequestParams()
     {
         $this->validateRequiredParameters();
 
         return array(
-            'api_key' => $this->getApiKey(),
-            'target_hash' => $this->getTargetHash(),
-            'country_code' => $this->getCountryCode(),
-            'name' => $this->getName(),
-            'phone' => $this->getPhone(),
-            'phone2' => $this->getPhone2(),
+            'api_key' => $this->api_key,
+            'target_hash' => $this->target_hash,
+            'country_code' => $this->country_code,
+            'first_name' => $this->first_name,
+            'last_name' => $this->last_name,
+            'name' => $this->name,
+            'phone' => $this->phone,
+            'phone2' => $this->phone2,
+            'data1' => $this->data1,
+            'data2' => $this->data2,
+            'data3' => $this->data3,
+            'data4' => $this->data4,
+            'clickid' => $this->clickid,
             'ip' => $this->getIp(),
-            'user_agent' => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
-            'referer' => empty($_SERVER['HTTP_REFERER']) ? '' : $_SERVER['HTTP_REFERER'],
-            'accept_language' => empty($_SERVER['HTTP_ACCEPT_LANGUAGE']) ? '' : $_SERVER['HTTP_ACCEPT_LANGUAGE'],
-            'data1' => $this->getData1(),
-            'data2' => $this->getData2(),
-            'data3' => $this->getData3(),
-            'data4' => $this->getData4(),
-            'clickid' => $this->getClickid(),
-            'address' => $this->getAddress(),
-            'price' => $this->getPrice(),
-            'custom' => isset($_REQUEST['custom']) && is_array($_REQUEST['custom']) ? $_REQUEST['custom'] : array(),
+            'user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
+            'referer' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '',
+            'browser_locale' => $this->browser_locale,
+            'address' => $this->address,
+            'state' => $this->state,
+            'city' => $this->city,
+            'zipcode' => $this->zipcode,
+            'email' => $this->email,
+            'comment' => $this->comment,
+            'size' => $this->size,
+            'quantity' => $this->quantity,
+            'password' => $this->password,
+            'language' => $this->language,
+            'tz_name' => $this->tz_name,
+            'call_time_frame' => $this->call_time_frame,
+            'messenger_code' => $this->messenger_code,
+            'sale_code' => $this->sale_code,
+            'price' => $this->price,
         );
     }
 
     private function validateRequiredParameters()
     {
-        if ($this->getApiKey() === '{YOUR_API_KEY}') {
+        if ($this->api_key === '{YOUR_API_KEY}') {
             die('Parameter API_KEY is not set.');
         }
 
-        if ($this->getTargetHash() === '{TARGET_HASH}') {
+        if ($this->target_hash === '{TARGET_HASH}') {
             die('Parameter TARGET_HASH is not set.');
         }
 
-        if ($this->getCountryCode() === '{COUNTRY_CODE}') {
+        if ($this->country_code === '{COUNTRY_CODE}') {
             die('Parameter COUNTRY_CODE is not set.');
         }
-    }
-
-    public function getData1()
-    {
-        return is_null($this->data1) ? '' : $this->data1;
-    }
-
-    public function setData1($data1)
-    {
-        $this->data1 = $data1;
-    }
-
-    public function getData2()
-    {
-        return is_null($this->data2) ? '' : $this->data2;
-    }
-
-    public function setData2($data2)
-    {
-        $this->data2 = $data2;
-    }
-
-    public function getData3()
-    {
-        return is_null($this->data3) ? '' : $this->data3;
-    }
-
-    public function setData3($data3)
-    {
-        $this->data3 = $data3;
-    }
-
-    public function getData4()
-    {
-        return is_null($this->data4) ? '' : $this->data4;
-    }
-
-    public function setData4($data4)
-    {
-        $this->data4 = $data4;
-    }
-
-    public function getClickid()
-    {
-        return is_null($this->clickid) ? '' : $this->clickid;
-    }
-
-    public function setClickid($clickid)
-    {
-        $this->clickid = $clickid;
     }
 
     public function getIp()
@@ -263,9 +247,8 @@ class PublisherApi
     private function parseXForwardedForIp()
     {
         $ips = $this->getXForwarderForIps();
-        $user_ip = reset($ips);
 
-        return $user_ip;
+        return reset($ips);
     }
 
     private function getXForwarderForIps()
@@ -273,64 +256,45 @@ class PublisherApi
         return explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
     }
 
-    public function getTargetHash()
+    public function getBrowserLocale()
     {
-        return $this->target_hash;
+        $accept_language = isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) ? $_SERVER['HTTP_ACCEPT_LANGUAGE'] : '';
+
+        return substr($accept_language, 0, 2);
     }
 
-    public function setTargetHash($target_hash)
+    public function setProperty($property, $value)
     {
-        $this->target_hash = $target_hash;
+        if (!property_exists($this, $property)) {
+            throw new \Exception("Property {$property} does not exists");
+        }
+
+        $this->{$property} = $value;
     }
 
-    public function getApiKey()
+    public function setPrice($price)
     {
-        return $this->api_key;
+        $this->price = $price;
     }
 
-    public function setApiKey($api_key)
+    public function getCurlInfo()
     {
-        $this->api_key = $api_key;
+        return $this->curl_info;
     }
 
-    public function getCountryCode()
+    public function getLogFilePath()
     {
-        return $this->country_code;
+        return $this->log_file_path;
     }
 
-    public function setCountryCode($country_code)
+    public function setLogFilePath($log_file_path)
     {
-        $this->country_code = $country_code;
+        $this->log_file_path = $log_file_path;
     }
 
-    public function getPhone()
+    public function isEnableWriteLog()
     {
-        return $this->phone;
-    }
-
-    public function setPhone($phone)
-    {
-        $this->phone = $phone;
-    }
-
-    public function getPhone2()
-    {
-        return is_null($this->phone2) ? '' : $this->phone2;
-    }
-
-    public function setPhone2($phone2)
-    {
-        $this->phone2 = $phone2;
-    }
-
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    public function setName($name)
-    {
-        $this->name = $name;
+        return $this->enable_write_log;
     }
 
     public function enableWriteLog($enable = false, $log_file_path = '')
@@ -341,36 +305,9 @@ class PublisherApi
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getAddress()
+    public function setEnableWriteLog($enable_write_log)
     {
-        return $this->address;
-    }
-
-    /**
-     * @param string $address
-     */
-    public function setAddress($address)
-    {
-        $this->address = $address;
-    }
-
-    /**
-     * @return float|null
-     */
-    public function getPrice()
-    {
-        return $this->price;
-    }
-
-    /**
-     * @param float $price
-     */
-    public function setPrice($price)
-    {
-        $this->price = $price;
+        $this->enable_write_log = $enable_write_log;
     }
 
     private function writeLog()
@@ -380,10 +317,5 @@ class PublisherApi
             sprintf("[%s] %s\n", date("Y-m-d H:i:s"), http_build_query($this->getRequestParams())),
             FILE_APPEND
         );
-    }
-
-    public function getCurlInfo()
-    {
-        return $this->curl_info;
     }
 }
