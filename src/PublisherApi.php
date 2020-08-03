@@ -112,15 +112,13 @@ class PublisherApi
      *
      * @param string $name
      * @param string $phone
-     * @param string $phone2
      * @return mixed
      * @throws \Exception
      */
-    public function makeOrder($name, $phone, $phone2 = '')
+    public function makeOrder($name, $phone)
     {
         $this->setProperty('name', $name);
         $this->setProperty('phone', $phone);
-        $this->setProperty('phone2', $phone2);
 
         $ch = $this->getCh();
 
