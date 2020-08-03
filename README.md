@@ -1,5 +1,5 @@
 # Documentation
-
+### A previous version of API available in v2 branch [here](https://github.com/aff1-cpa/publisher-api/tree/v2).
 ## Requirement:
 
 * php: >= 5.3.0
@@ -47,6 +47,9 @@ $api->makeOrder($_REQUEST['name'], $_REQUEST['phone']);
 Note: It is assumed that the form has name fields for the name of the buyer,
 and phone - the phone number of the buyer.
 ```
+
+# Документация
+### Предыдущая версия API доступна в v2 ветке [здесь](https://github.com/aff1-cpa/publisher-api/tree/v2).
 
 ## Требования:
 
