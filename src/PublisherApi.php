@@ -15,6 +15,9 @@ class PublisherApi
     private $api_key = '{YOUR_API_KEY}';
 
     /** @var string */
+    private $flow_hash = '{FLOW_HASH}';
+
+    /** @var string */
     private $target_hash = '{TARGET_HASH}';
 
     /** @var string */
@@ -150,9 +153,22 @@ class PublisherApi
     {
         $this->validateRequiredParameters();
 
+        return array_merge($this->getFlowHashOrTargetHash(), $this->getOptionalParameters());
+    }
+
+    private function getFlowHashOrTargetHash()
+    {
+        if ($this->flow_hash) {
+            return array('flow_hash' => $this->flow_hash);
+        }
+
+        return array('target_hash' => $this->target_hash);
+    }
+
+    private function getOptionalParameters()
+    {
         return array(
             'api_key' => $this->api_key,
-            'target_hash' => $this->target_hash,
             'country_code' => $this->country_code,
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
@@ -192,12 +208,8 @@ class PublisherApi
             die('Parameter API_KEY is not set.');
         }
 
-        if ($this->target_hash === '{TARGET_HASH}') {
-            die('Parameter TARGET_HASH is not set.');
-        }
-
-        if ($this->country_code === '{COUNTRY_CODE}') {
-            die('Parameter COUNTRY_CODE is not set.');
+        if (!$this->target_hash || !$this->flow_hash) {
+            die('Either parameter TARGET_HASH or FLOW_HASH should be set.');
         }
     }
 
