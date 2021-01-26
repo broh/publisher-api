@@ -5,6 +5,7 @@ include("src/PublisherApi.php");
 $api = new \Aff1\PublisherApi();
 
 $api->setProperty('api_key', '{API_KEY}');
+$api->setProperty('flow_hash', '{FLOW_HASH}');
 $api->setProperty('target_hash', '{TARGET_HASH}');
 $api->setProperty('country_code', request('country_code'));
 $api->setProperty('first_name', custom('first_name'));

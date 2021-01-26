@@ -15,6 +15,9 @@ class PublisherApi
     private $api_key = '{YOUR_API_KEY}';
 
     /** @var string */
+    private $flow_hash = '{FLOW_HASH}';
+
+    /** @var string */
     private $target_hash = '{TARGET_HASH}';
 
     /** @var string */
@@ -49,6 +52,9 @@ class PublisherApi
 
     /** @var string */
     private $clickid = '';
+
+    /** @var string */
+    private $fbclid = '';
 
     /** @var string */
     private $browser_locale = '';
@@ -150,9 +156,22 @@ class PublisherApi
     {
         $this->validateRequiredParameters();
 
+        return array_merge($this->getFlowHashOrTargetHash(), $this->getOptionalParameters());
+    }
+
+    private function getFlowHashOrTargetHash()
+    {
+        if ($this->flow_hash) {
+            return array('flow_hash' => $this->flow_hash);
+        }
+
+        return array('target_hash' => $this->target_hash);
+    }
+
+    private function getOptionalParameters()
+    {
         return array(
             'api_key' => $this->api_key,
-            'target_hash' => $this->target_hash,
             'country_code' => $this->country_code,
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
@@ -164,6 +183,7 @@ class PublisherApi
             'data3' => $this->data3,
             'data4' => $this->data4,
             'clickid' => $this->clickid,
+            'fbclid' => $this->fbclid,
             'ip' => $this->getIp(),
             'user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
             'referer' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '',
@@ -192,12 +212,8 @@ class PublisherApi
             die('Parameter API_KEY is not set.');
         }
 
-        if ($this->target_hash === '{TARGET_HASH}') {
-            die('Parameter TARGET_HASH is not set.');
-        }
-
-        if ($this->country_code === '{COUNTRY_CODE}') {
-            die('Parameter COUNTRY_CODE is not set.');
+        if ($this->target_hash === '{TARGET_HASH}' && $this->flow_hash === '{FLOW_HASH}') {
+            die('Either parameter TARGET_HASH or FLOW_HASH must be set.');
         }
     }
 
