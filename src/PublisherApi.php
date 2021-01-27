@@ -212,7 +212,7 @@ class PublisherApi
             die('Parameter API_KEY is not set.');
         }
 
-        if (!$this->hasFlowHashBeenFilled() && $this->hasTargetHashBeenFilled()) {
+        if (!$this->hasFlowHashBeenFilled() && !$this->hasTargetHashBeenFilled()) {
             die('Either parameter TARGET_HASH or FLOW_HASH must be set.');
         }
     }
@@ -224,7 +224,7 @@ class PublisherApi
 
     private function hasTargetHashBeenFilled()
     {
-        return $this->flow_hash !== '{TARGET_HASH}';
+        return $this->target_hash !== '{TARGET_HASH}';
     }
 
     public function getIp()
