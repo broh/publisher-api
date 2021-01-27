@@ -219,12 +219,12 @@ class PublisherApi
 
     private function hasFlowHashBeenFilled()
     {
-        return $this->flow_hash !== '{FLOW_HASH}';
+        return $this->flow_hash && $this->flow_hash !== '{FLOW_HASH}';
     }
 
     private function hasTargetHashBeenFilled()
     {
-        return $this->target_hash !== '{TARGET_HASH}';
+        return $this->target_hash && $this->target_hash !== '{TARGET_HASH}';
     }
 
     public function getIp()
