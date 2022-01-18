@@ -96,6 +96,9 @@ class PublisherApi
     private $call_time_frame = '';
 
     /** @var string */
+    private $call_language = '';
+
+    /** @var string */
     private $messenger_code = '';
 
     /** @var string */
@@ -200,6 +203,7 @@ class PublisherApi
             'language' => $this->language,
             'tz_name' => $this->tz_name,
             'call_time_frame' => $this->call_time_frame,
+            'call_language' => $this->call_language,
             'messenger_code' => $this->messenger_code,
             'sale_code' => $this->sale_code,
             'price' => $this->price,
